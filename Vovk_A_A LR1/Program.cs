@@ -11,8 +11,6 @@ namespace Vovk_A_A_LR1
     {
         static void Main()
         {
-            var numbers = GetNumbers();
-            var longNumbers = new List<LongInt>();
         }
 
         static List<(char, List<int>)> GetNumbers() //Метод получения чисел из Numbers.xml

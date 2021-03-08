@@ -34,17 +34,26 @@ namespace Vovk_A_A_LR1
         public static bool operator <(LongInt a, LongInt b) => Comparison(a, b, false) < 0;
         public static bool operator ==(LongInt a, LongInt b) => Comparison(a, b, false) == 0;
         public static bool operator !=(LongInt a, LongInt b) => Comparison(a, b, false) != 0;
+        public static LongInt operator -(LongInt a) => new LongInt((a.GetInverseModulo(a.Sign), a.Number));
 
         public static LongInt operator +(LongInt first, LongInt second) => first.Sign == second.Sign
             ? Add(first, second)
             : Substract(first, second);
-        public static LongInt operator -(LongInt first, LongInt second)
-        {
-            char negativeSign = '-';
-            if (second.Sign == '-')
-                negativeSign = '+';
-            return new LongInt((negativeSign, second.Number));
+        public static LongInt operator -(LongInt first, LongInt second) => first + -second;
+
+        private string GetStr()//Получение строкового представления числа
+        {//Проверен тестами.
+            string res = "";
+            if (Sign == '-')
+                res += '-';
+            foreach (var num in Number)
+                res += num.ToString();
+            return res;
         }
+
+        public static LongInt operator *(LongInt a, LongInt b) => Multiply(a, b);
+
+        private char GetInverseModulo(char sign) => sign == '+' ? '-' : '+'; //Меняет знак числа
 
         public int GetSize() => Number.Count(); // Получаем кол-во разрядов(длину числа)
 
@@ -170,14 +179,39 @@ namespace Vovk_A_A_LR1
             return new LongInt((biggerLongInt.Sign, res));
         }
 
-        private string GetStr()//Получение строкового представления числа
-        {//Проверен тестами.
-            string res = "";
-            if (Sign == '-')
-                res += '-';
-            foreach (var num in Number)
-                res += num.ToString();
-            return res;
+        private static LongInt Multiply(LongInt first, LongInt second)
+        {
+            first.Number.Reverse();
+            second.Number.Reverse();
+            var ten = 0;
+            var result = new LongInt(('+', new List<int>()));
+            for (var i = 0; i < second.GetSize(); i++)
+            {
+                var resDiscargeMult = new List<int>();
+                for (var k = 0; k < i; k++) //Заполняем нулями пустые разряды
+                    resDiscargeMult.Add(0);
+                for (var j = 0; j < first.GetSize(); j++)
+                {
+                    var res = second[i] * first[j] + ten;
+                    ten = 0;
+                    if (res > 9)
+                    {
+                        ten = res / 10;
+                        res %= 10;
+                    }
+                    resDiscargeMult.Add(res);
+                }
+                if (ten != 0)
+                {
+                    resDiscargeMult.Add(ten); // Добавляем последний разряд
+                    ten = 0; //Обнуляем переменную десятков
+                }
+                resDiscargeMult.Reverse();
+                result += new LongInt(('+', resDiscargeMult));
+            }
+            if (first.Sign == '-' && second.Sign == '+' || first.Sign == '+' && second.Sign == '-')
+                result = -result;
+            return result;
         }
     }
 }
