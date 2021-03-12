@@ -11,6 +11,7 @@ namespace Vovk_A_A_LR1
     {
         static void Main()
         {
+
         }
 
         static List<(char, List<int>)> GetNumbers() //Метод получения чисел из Numbers.xml

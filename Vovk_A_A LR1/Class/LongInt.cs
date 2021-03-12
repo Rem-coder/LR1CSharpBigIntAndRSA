@@ -8,8 +8,8 @@ namespace Vovk_A_A_LR1
 {
     public class LongInt
     {
-        public List<int> Number { get; }
-        public char Sign { get; }
+        public List<int> Number { get; private set; }
+        public char Sign { get; private set; }
         public string StrNumber { get; }
 
         public LongInt((char, List<int>) number)
@@ -28,6 +28,30 @@ namespace Vovk_A_A_LR1
                 else
                     return this.Number[index];
             }
+
+            set
+            {
+                Number[index] = value;
+            }
+        }
+
+        public void SetByte(int i, int b)
+        {
+            while (Number.Count <= i)
+            {
+                Number.Add(0);
+            }
+
+            Number[i] = b;
+        }
+
+        public void SetValue(int index, int value)
+        {
+            while (Number.Count <= index)
+            {
+                Number.Add(0);
+            }
+            Number[index] = value;
         }
 
         public static bool operator >(LongInt a, LongInt b) => Comparison(a, b, false) > 0;
@@ -52,6 +76,8 @@ namespace Vovk_A_A_LR1
         }
 
         public static LongInt operator *(LongInt a, LongInt b) => Multiply(a, b);
+        public static LongInt operator /(LongInt a, LongInt b) => Div(a, b).Item1;
+        public static LongInt operator %(LongInt a, LongInt b) => Div(a, b).Item2;
 
         private char GetInverseModulo(char sign) => sign == '+' ? '-' : '+'; //Меняет знак числа
 
@@ -132,6 +158,8 @@ namespace Vovk_A_A_LR1
             if (ten > 0)
                 res.Add(ten);
             res.Reverse(); //Реверсируем обратно
+            first.Number.Reverse();
+            second.Number.Reverse();
             return new LongInt((first.Sign, res));
         }
 
@@ -155,6 +183,7 @@ namespace Vovk_A_A_LR1
                 biggerLongInt = first;
                 lesserLongInt = FillZero(second, first.GetSize());
             }
+
             else
             {
                 biggerLongInt = second;
@@ -174,9 +203,11 @@ namespace Vovk_A_A_LR1
                 res.Add(sum);
             }
             res.Reverse();
-            if (res[0] == 0) //Удаляем возможный не желательный 0
-                res.RemoveAt(0);
-            return new LongInt((biggerLongInt.Sign, res));
+            var result = new LongInt((biggerLongInt.Sign, res));
+            result.RemoveNulls();
+            if (result[0] == 0)
+                result.Sign = '+';
+            return result;
         }
 
         private static LongInt Multiply(LongInt first, LongInt second)
@@ -211,7 +242,158 @@ namespace Vovk_A_A_LR1
             }
             if (first.Sign == '-' && second.Sign == '+' || first.Sign == '+' && second.Sign == '-')
                 result = -result;
+            first.Number.Reverse();
+            second.Number.Reverse();
             return result;
+        }
+
+        private void RemoveNulls()
+        {
+            var resCount = Number.Count;
+            for (var i = 0; i < resCount - 1; i++)
+            {
+                if (Number[0] == 0) //Удаляем возможные не желательные 0
+                    Number.RemoveAt(0);
+                else
+                    break;
+            }
+        }
+
+        public static LongInt Exp(int val, int exp)
+        {
+            var bigInt = new LongInt(('+', new List<int>() { 0 }));
+            bigInt.SetByte(exp, val);
+            bigInt.RemoveNulls();
+            return bigInt;
+        }
+
+        public static (LongInt, LongInt) Div(LongInt dividend, LongInt divider)
+        {
+            var startDividerSign = divider.Sign;
+            divider.Sign = '+'; //нужно для корректного умножения в случае отрицательного знака
+            var startDividendSign = dividend.Sign;
+            divider.Sign = '+';
+
+            if (Comparison(dividend, divider, true) == -1)
+            {
+                var wholeResSpecial = new LongInt(('+', new List<int>() { 0 }));
+                var remainderResSpecial = dividend;
+                divider.Sign = startDividerSign;
+                dividend.Sign = startDividendSign;
+                GetSignRes(wholeResSpecial, remainderResSpecial, dividend, divider);
+                return (wholeResSpecial, remainderResSpecial);
+            }
+            if (Comparison(dividend, divider, true) == 0)
+            {
+                var wholeResSpecial = new LongInt(('+', new List<int>() { 1 }));
+                var remainderResSpecial = new LongInt(('+', new List<int>() { 0 }));
+                divider.Sign = startDividerSign;
+                dividend.Sign = startDividendSign;
+                GetSignRes(wholeResSpecial, remainderResSpecial, dividend, divider);
+                return (wholeResSpecial, remainderResSpecial);
+            }
+            if (divider == new LongInt(('+', new List<int>() { 0 })))
+                throw new Exception("Деление на 0");
+
+            var pieceDividend = new LongInt(('+', new List<int>()));
+            var wholeRes = new LongInt(('+', new List<int>()));
+            var remainderRes = new LongInt(('+', new List<int>()));
+            var oneDiscarge = new LongInt(('+', new List<int>() { 0 }));
+            var i = 0;
+            for (var j = 0; j < divider.GetSize(); j++)
+            {
+                pieceDividend.Number.Add(dividend[i]);
+                i++;
+            }
+            if (Comparison(pieceDividend, divider, true) == -1)
+            {
+                pieceDividend.Number.Add(dividend[i]); // если часть числителя с равным кол-вом разрядов меньше, то добавляем ещё 1;
+                i++;
+            }
+
+            do
+            {
+                oneDiscarge = GetOneDisc(pieceDividend, oneDiscarge, divider).Item1;
+                var flagDischargeShift = true; //Костыль для корректного передвижения i- индекса отслеживаемого разряда делимого;
+                wholeRes.Number.Add(oneDiscarge[0]);
+                remainderRes = pieceDividend - oneDiscarge * divider;
+                pieceDividend -= oneDiscarge * divider;
+                oneDiscarge[0] = 0;
+                if (pieceDividend[0] == 0)
+                {
+                    i = ShiftDigits(i, dividend, divider, pieceDividend, wholeRes);
+                    if (i == dividend.GetSize() - 1)
+                    {
+                        var res = GetOneDisc(pieceDividend, oneDiscarge, divider);
+                        oneDiscarge = res.Item1;
+                        remainderRes = res.Item2;
+                        wholeRes.Number.Add(oneDiscarge[0]);
+                        divider.Sign = startDividerSign;
+                        dividend.Sign = startDividendSign;
+                        GetSignRes(wholeRes, remainderRes, dividend, divider);
+                        return (wholeRes, remainderRes);
+                    }
+                }
+                var iter = 0; // подсчёт сдвига разрядов;
+                while (pieceDividend < divider)
+                {
+                    flagDischargeShift = false;
+                    pieceDividend.Number.Add(dividend[i]);
+                    if (iter >= 1)
+                        wholeRes.Number.Add(0);
+                    i++;
+                    iter++;
+                }
+                if (flagDischargeShift)
+                    i++;
+            }
+            while (i <= dividend.GetSize());
+            divider.Sign = startDividerSign;
+            dividend.Sign = startDividendSign;
+            GetSignRes(wholeRes, remainderRes, dividend, divider);
+            return (wholeRes, remainderRes);
+        }
+
+        private static int ShiftDigits(int i, LongInt dividend, LongInt divider, LongInt pieceDividend, LongInt wholeRes)
+        {
+            pieceDividend[0] = dividend[i];
+            for (var j = i; j < dividend.GetSize(); j++)
+            {
+                if (pieceDividend < divider)
+                {
+                    i++;
+                    if (pieceDividend[0] == 0)
+                        pieceDividend[0] = dividend[i];
+                    else
+                        pieceDividend.Number.Add(dividend[i]);
+                    wholeRes.Number.Add(0);
+                }
+                else
+                    break;
+            }
+            return i;
+        }
+
+        private static (LongInt, LongInt) GetOneDisc(LongInt pieceDividend, LongInt oneDiscarge, LongInt divider)
+        {
+            var a = pieceDividend - oneDiscarge * divider;
+            while (Comparison(a, divider, true) == 1 || Comparison(a, divider, true) == 0)
+            {
+                oneDiscarge += new LongInt(('+', new List<int>() { 1 }));
+                a = pieceDividend - oneDiscarge * divider;
+            }
+            return (oneDiscarge, a);
+        }
+
+        private static void GetSignRes(LongInt wholeRes, LongInt remainderRes, LongInt dividend, LongInt divider)
+        {
+            if (dividend.Sign != divider.Sign)
+            {
+                if (wholeRes[0] != 0)
+                    wholeRes.Sign = '-';
+                if (remainderRes[0] != 0)
+                    remainderRes.Sign = '-';
+            }
         }
     }
 }

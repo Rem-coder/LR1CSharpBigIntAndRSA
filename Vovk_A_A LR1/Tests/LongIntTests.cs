@@ -79,6 +79,7 @@ namespace Vovk_A_A_LR1
             [TestCase('-', new int[] { 1, 2, 3 }, '-', new int[] { 2, 0 }, TestName = "shortMinus", ExpectedResult = true)]
             [TestCase('+', new int[] { 1, 2, 3 }, '-', new int[] { 2, 0 }, TestName = "shortPlusMinus", ExpectedResult = false)]
             [TestCase('-', new int[] { 1, 2, 3 }, '+', new int[] { 2, 0 }, TestName = "shortMinusPlus", ExpectedResult = true)]
+            [TestCase('+', new int[] { 2, 0 }, '+', new int[] { 5 }, TestName = "special1", ExpectedResult = false)]
             [TestCase('+', new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 9, 9, 9, 9, 9, 9 },
                 '+', new int[] { 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9 },
                 TestName = "longPlus", ExpectedResult = true)]
@@ -157,7 +158,7 @@ namespace Vovk_A_A_LR1
             TestName = "shortPlusPlusFirstB")]
             [TestCase('+', new int[] { 1, 0, 5 }, '+', new int[] { 1, 0, 0, 0, 5 }, new int[] { 1, 0, 1, 1, 0 }, '+',
             TestName = "shortPlusPlusSecondB")]
-            [TestCase('+', new int[] { 1, 0, 0, 1, 0, 9 }, '-', new int[] { 1, 0, 0, 1, 0, 9 }, new int[] { 0 }, '-',
+            [TestCase('+', new int[] { 1, 0, 0, 1, 0, 9 }, '-', new int[] { 1, 0, 0, 1, 0, 9 }, new int[] { 0 }, '+',
             TestName = "shortPlusMinusEqual")]
             [TestCase('-', new int[] { 1, 0, 0, 1, 0, 9 }, '+', new int[] { 1, 0, 0, 1, 0, 9 }, new int[] { 0 }, '+',
             TestName = "shortMinusPlusEqual")]
@@ -190,7 +191,7 @@ namespace Vovk_A_A_LR1
             TestName = "longPlusPlusSecondB")]
             [TestCase('+', new int[] { 3, 6, 5, 4, 6, 4, 3, 6, 0, 3, 5, 9, 1, 3, 0, 5, 9, 3, 1, 4, 5, 7, 1, 3, 5, 0, 9, 1, 3, 8, 5, 0, 1, 3, 5, 7, 0, 1, 3, 4, 5, 1, 3, 4, 5, 7, 1, 3, 0, 5, 1, 3, 4, 7, 5, 0, 1, 3, 5, 7, 0, 1, 3, 4, 6, 0, 1, 7 },
                 '-', new int[] { 3, 6, 5, 4, 6, 4, 3, 6, 0, 3, 5, 9, 1, 3, 0, 5, 9, 3, 1, 4, 5, 7, 1, 3, 5, 0, 9, 1, 3, 8, 5, 0, 1, 3, 5, 7, 0, 1, 3, 4, 5, 1, 3, 4, 5, 7, 1, 3, 0, 5, 1, 3, 4, 7, 5, 0, 1, 3, 5, 7, 0, 1, 3, 4, 6, 0, 1, 7 },
-                new int[] { 0 }, '-',
+                new int[] { 0 }, '+',
             TestName = "longPlusMinusEqual")]
             [TestCase('-', new int[] { 5, 7, 5, 3, 7, 0, 3, 5, 9, 7, 5, 3, 6, 7, 0, 3, 5, 6, 9, 7, 3, 5, 0, 8, 7, 0, 3, 5, 8, 6, 0, 7, 8, 3, 5, 0, 6, 7, 3, 0, 5, 7, 8, 0, 3, 5, 6, 7, 8, 9, 0, 3, 5, 8, 7, 0, 3, 5, 8, 6, 9, 0, 7, 3, 5, 8, 0, 6, 7, 8, 3, 5, 0, 8, 7, 3, 5, 8, 7, 3, 0 },
                 '+', new int[] { 5, 7, 5, 3, 7, 0, 3, 5, 9, 7, 5, 3, 6, 7, 0, 3, 5, 6, 9, 7, 3, 5, 0, 8, 7, 0, 3, 5, 8, 6, 0, 7, 8, 3, 5, 0, 6, 7, 3, 0, 5, 7, 8, 0, 3, 5, 6, 7, 8, 9, 0, 3, 5, 8, 7, 0, 3, 5, 8, 6, 9, 0, 7, 3, 5, 8, 0, 6, 7, 8, 3, 5, 0, 8, 7, 3, 5, 8, 7, 3, 0 },
@@ -236,8 +237,10 @@ namespace Vovk_A_A_LR1
 
         public class MinusTest
         {
-            [TestCase('+', new int[] { 1, 0, 0 }, '+', new int[] { 1, 0, 0 }, new int[] { 0 }, '-',
+            [TestCase('+', new int[] { 1, 0, 0 }, '+', new int[] { 1, 0, 0 }, new int[] { 0 }, '+',
             TestName = "shortPlusPlusEqual")]
+            [TestCase('+', new int[] { 1, 3, 5 }, '+', new int[] { 1, 3, 2 }, new int[] { 3 }, '+',
+            TestName = "Special")]
             [TestCase('+', new int[] { 1, 0, 0, 0, 5 }, '+', new int[] { 1, 0, 0 }, new int[] { 9, 9, 0, 5 }, '+',
             TestName = "shortPlusPlusFirstB")]
             [TestCase('+', new int[] { 1, 0, 5 }, '+', new int[] { 1, 0, 0, 0, 5 }, new int[] { 9, 9, 0, 0 }, '-',
@@ -270,10 +273,12 @@ namespace Vovk_A_A_LR1
             }
         }
 
-        public class Multiplication
+        public class MultiplicationTest
         {
             [TestCase('+', new int[] { 2, 3 }, '+', new int[] { 3, 5 }, new int[] { 8, 0, 5 }, '+',
             TestName = "shortPlusPlusSameLen")]
+            [TestCase('+', new int[] { 2, 3 }, '+', new int[] { 1 }, new int[] { 2, 3 }, '+',
+            TestName = "shortPlusOne")]
             [TestCase('+', new int[] { 9, 0, 0, 0 }, '+', new int[] { 3, 4 }, new int[] { 3, 0, 6, 0, 0, 0 }, '+',
             TestName = "shortPlusPlusFirstB")]
             [TestCase('+', new int[] { 2, 5 }, '+', new int[] { 9, 9, 9, 9, 9 }, new int[] { 2, 4, 9, 9, 9, 7, 5 }, '+',
@@ -302,10 +307,132 @@ namespace Vovk_A_A_LR1
             '+', new int[] { 0 },
             new int[] { 0 }, '+',
             TestName = "secondZero")]
-            public void AddTests(char firstSign, int[] firstNumber, char secondSign, int[] secondNumber, int[] res, char sign)
+            public void MultiplicationTests(char firstSign, int[] firstNumber, char secondSign, int[] secondNumber, int[] res, char sign)
             {
                 var resultAdd = new LongInt((firstSign, firstNumber.ToList<int>()))
                     * new LongInt((secondSign, secondNumber.ToList<int>()));
+                for (var i = 0; i < res.Length; i++)
+                    Assert.AreEqual(res[i], resultAdd[i]);
+                Assert.AreEqual(sign, resultAdd.Sign);
+            }
+        }
+
+        public class IntegerDivTest
+        {
+            [TestCase('+', new int[] { 1, 3 }, '+', new int[] { 5 }, new int[] { 2 }, '+',
+               TestName = "shortPlusPlusFirstB1")]
+            [TestCase('+', new int[] { 1, 3, 5 }, '+', new int[] { 6 }, new int[] { 2, 2 }, '+',
+               TestName = "shortPlusPlusFirstB")]
+            [TestCase('+', new int[] { 2, 0, 0 }, '+', new int[] { 2, 0, 0 }, new int[] { 1 }, '+',
+               TestName = "shortPlusPlusSameLen")]
+            [TestCase('+', new int[] { 5 }, '+', new int[] { 2 }, new int[] { 2 }, '+',
+               TestName = "shortPlusPlusNumbers")]
+            [TestCase('+', new int[] { 5, 7, 8, 3, 1, 4, 5, 9, 1 }, '+', new int[] { 2 }, new int[] { 2, 8, 9, 1, 5, 7, 2, 9, 5 }, '+',
+            TestName = "longPlusPlus")]
+            //[TestCase('+', new int[] { 5, 7, 8, 3, 1, 4, 5, 9, 1 }, '+', new int[] { 0 }, new int[] { 0 }, '+',
+            //TestName = "Zero")] // Должна выскочить ошибка
+            [TestCase('+', new int[] { 1, 0, 0, 2, 3, 5 }, '+', new int[] { 1, 3, 2 }, new int[] { 7, 5, 9 }, '+',
+            TestName = "shortPlusPlus")]
+            [TestCase('+', new int[] { 1, 0, 0, 0, 0, 0 }, '+', new int[] { 5 }, new int[] { 2, 0, 0, 0, 0 }, '+',
+            TestName = "random1")]
+            [TestCase('+', new int[] { 1, 0, 2, 0 }, '+', new int[] { 5 }, new int[] { 2, 0, 4 }, '+',
+            TestName = "random2")]
+            [TestCase('+', new int[] { 2, 0, 0, 2, 0, 2, 0, 2, 2, 0 }, '+', new int[] { 7 }, new int[] { 2, 8, 6, 0, 0, 2, 8, 8, 8 }, '+',
+            TestName = "random3")]
+            [TestCase('+', new int[] { 2, 0, 0, 2, 0 }, '+', new int[] { 2, 0, 0, 2 }, new int[] { 1, 0 }, '+',
+            TestName = "random4")]
+            [TestCase('+', new int[] { 1, 0, 0, 0, 0, 0 }, '+', new int[] { 1, 5 }, new int[] { 6, 6, 6, 6 }, '+',
+            TestName = "random5")]
+            [TestCase('+', new int[] { 5, 1, 7, 3, 8, 5, 1, 3, 4, 5, 1, 3, 4, 9, 1, 4, 0, 0, 0 },
+                '+', new int[] { 1, 3, 4, 7, 5, 1, 3, 9, 5, 1, 3, 8, 9, 4, 5, 9, 2, 0, 0 },
+                new int[] { 3 }, '+',
+            TestName = "random6")]
+            [TestCase('+', new int[] { 5, 1, 7, 3, 8, 5, 1, 3, 4, 5, 1, 3, 4, 9, 1, 4, 0, 0, 0 },
+                '+', new int[] { 3 },
+                new int[] { 1, 7, 2, 4, 6, 1, 7, 1, 1, 5, 0, 4, 4, 9, 7, 1, 3, 3, 3 }, '+',
+            TestName = "random7")]
+            [TestCase('-', new int[] { 5, 1, 7, 3, 8, 5, 1, 3, 4, 5, 1, 3, 4, 9, 1, 4, 0, 0, 0 },
+                '+', new int[] { 3 },
+                new int[] { 1, 7, 2, 4, 6, 1, 7, 1, 1, 5, 0, 4, 4, 9, 7, 1, 3, 3, 3 }, '-',
+            TestName = "dividendMinus")]
+            [TestCase('+', new int[] { 1, 3 }, '-', new int[] { 5 }, new int[] { 2 }, '-',
+               TestName = "dividerMinus")]
+            [TestCase('+', new int[] { 5, 1, 7, 3, 8, 5, 1, 3, 4, 5, 1, 3, 4, 9, 1, 4, 0, 0, 0 },
+                '-', new int[] { 3 },
+                new int[] { 1, 7, 2, 4, 6, 1, 7, 1, 1, 5, 0, 4, 4, 9, 7, 1, 3, 3, 3 }, '-',
+            TestName = "dividendMinus2")]
+            [TestCase('-', new int[] { 1, 3 }, '-', new int[] { 5 }, new int[] { 2 }, '+',
+               TestName = "dividendAndDividerMinus")]
+            [TestCase('-', new int[] { 5, 1, 7, 3, 8, 5, 1, 3, 4, 5, 1, 3, 4, 9, 1, 4, 0, 0, 0 },
+                '-', new int[] { 3 },
+                new int[] { 1, 7, 2, 4, 6, 1, 7, 1, 1, 5, 0, 4, 4, 9, 7, 1, 3, 3, 3 }, '+',
+            TestName = "dividendAndDividerMinus2")]
+            [TestCase('+', new int[] { 8, 9, 0, 0, 0, 0, 9, 0, 4, 3, 2, 1, 4, 0, 9 },
+                '-', new int[] { 6, 5, 8, 9, 5, 4, 3, 7 },
+                new int[] { 1, 3, 5, 0, 6, 2, 5, 9 }, '-',
+            TestName = "random8")]
+            [TestCase('+', new int[] { 9, 5, 8, 3, 8, 5, 9, 4, 1, 0, 0, 0, 0, 0, 0 },
+                '+', new int[] { 6, 6, 6, 6 },
+                new int[] { 1, 4, 3, 7, 7, 2, 2, 6, 8, 3, 7, 6 }, '+',
+            TestName = "random10")]
+            [TestCase('+', new int[] { 9, 0, 9, 0, 9, 0, 9, 0, 9, 9, 0, 9, 0, 0, 0, 9, 0, 0, 9 },
+                '+', new int[] { 5 },
+                new int[] { 1, 8, 1, 8, 1, 8, 1, 8, 1, 9, 8, 1, 8, 0, 0, 1, 8, 0, 1 }, '+',
+            TestName = "random11")]
+            [TestCase('+', new int[] { 5, 7, 7, 6, 9, 1, 3, 4, 8, 6, 9, 1, 3, 0, 9 },
+                '+', new int[] { 2, 1, 3 },
+                new int[] { 2, 7, 1, 2, 1, 6, 5, 9, 5, 6, 2, 9, 7 }, '+',
+            TestName = "random12")]
+            [TestCase('+', new int[] { 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9 },
+                '+', new int[] { 5, 2, 7, 3, 5, 6, 1, 9 },
+                new int[] { 1, 8, 9, 6, 2, 5, 1, 5, 6 }, '+',
+            TestName = "random13")]
+
+            public void IntegerDivTests(char firstSign, int[] firstNumber, char secondSign, int[] secondNumber, int[] res, char sign)
+            {
+                var resultAdd = new LongInt((firstSign, firstNumber.ToList<int>()))
+                    / new LongInt((secondSign, secondNumber.ToList<int>()));
+                for (var i = 0; i < res.Length; i++)
+                    Assert.AreEqual(res[i], resultAdd[i]);
+                Assert.AreEqual(sign, resultAdd.Sign);
+            }
+        }
+
+        public class IntegerRemTest
+        {
+            [TestCase('+', new int[] { 1, 3 }, '+', new int[] { 5 }, new int[] { 3 }, '+',
+               TestName = "shortPlusPlusFirstB1")]
+            [TestCase('+', new int[] { 1, 3, 5 }, '+', new int[] { 6 }, new int[] { 3 }, '+',
+               TestName = "shortPlusPlusFirstB")]
+            [TestCase('+', new int[] { 2, 0, 0 }, '+', new int[] { 2, 0, 0 }, new int[] { 0 }, '+',
+               TestName = "shortPlusPlusSameLen")]
+            [TestCase('+', new int[] { 5 }, '+', new int[] { 2 }, new int[] { 1 }, '+',
+               TestName = "shortPlusPlusNumbers")]
+            [TestCase('+', new int[] { 5, 7, 8, 3, 1, 4, 5, 9, 1 }, '+', new int[] { 2 }, new int[] { 1 }, '+',
+            TestName = "longPlusPlus")]
+            //[TestCase('+', new int[] { 5, 7, 8, 3, 1, 4, 5, 9, 1 }, '+', new int[] { 0 }, new int[] { 0 }, '+',
+            //TestName = "Zero")] // Должна выскочить ошибка
+            [TestCase('+', new int[] { 9, 5, 8, 3, 8, 5, 9, 4, 1, 0, 0, 0, 0, 0, 0 },
+                '+', new int[] { 6, 6, 6, 6 },
+                new int[] { 5, 5, 8, 4 }, '+',
+            TestName = "random1")]
+            [TestCase('-', new int[] { 9, 0, 9, 0, 9, 0, 9, 0, 9, 9, 0, 9, 0, 0, 0, 9, 0, 0, 9 },
+                '+', new int[] { 5 },
+                new int[] { 4 }, '-',
+            TestName = "random2")]
+            [TestCase('+', new int[] { 5, 7, 7, 6, 9, 1, 3, 4, 8, 6, 9, 1, 3, 0, 9 },
+                '-', new int[] { 2, 1, 3 },
+                new int[] { 4, 8 }, '-',
+            TestName = "random3")]
+            [TestCase('-', new int[] { 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9 },
+                '-', new int[] { 5, 2, 7, 3, 5, 6, 1, 9 },
+                new int[] { 2, 0, 3, 6, 8, 4, 3, 5 }, '+',
+            TestName = "random4")]
+
+            public void IntegerRemTests(char firstSign, int[] firstNumber, char secondSign, int[] secondNumber, int[] res, char sign)
+            {
+                var resultAdd = new LongInt((firstSign, firstNumber.ToList<int>()))
+                    % new LongInt((secondSign, secondNumber.ToList<int>()));
                 for (var i = 0; i < res.Length; i++)
                     Assert.AreEqual(res[i], resultAdd[i]);
                 Assert.AreEqual(sign, resultAdd.Sign);
@@ -371,8 +498,9 @@ namespace Vovk_A_A_LR1
             TestName = "longMinuMinusSecondB")]
         public void AddTests(char firstSign, int[] firstNumber, char secondSign, int[] secondNumber, int[] res, char sign)
         {
-            var resultAdd = LongInt.Add(new LongInt((firstSign, firstNumber.ToList<int>())),
-                new LongInt((secondSign, secondNumber.ToList<int>())));
+            var one = new LongInt((firstSign, firstNumber.ToList<int>()));
+            var two = new LongInt((secondSign, secondNumber.ToList<int>()));
+            var resultAdd = LongInt.Add(one, two);
             for (var i = 0; i < res.Length; i++)
                 Assert.AreEqual(res[i], resultAdd[i]);
             Assert.AreEqual(sign, resultAdd.Sign);
@@ -387,9 +515,9 @@ namespace Vovk_A_A_LR1
             TestName = "shortPlusMinusSameLen")]
         [TestCase('+', new int[] { 2, 3, 4, 5, 6, 7 }, '-', new int[] { 1, 0, 0, 0, 3, 0, 2, 1, 3 }, new int[] { 9, 9, 7, 9, 5, 6, 4, 6 }, '-',
             TestName = "shortPlusMinusSecondB")]
-        [TestCase('+', new int[] { 0 }, '-', new int[] { 0 }, new int[] { 0 }, '-',
+        [TestCase('+', new int[] { 0 }, '-', new int[] { 0 }, new int[] { 0 }, '+',
             TestName = "zero")]
-        [TestCase('+', new int[] { 1, 0, 0, 0, 0, 0, 0, 0 }, '-', new int[] { 1, 0, 0, 0, 0, 0, 0, 0 }, new int[] { 0 }, '-',
+        [TestCase('+', new int[] { 1, 0, 0, 0, 0, 0, 0, 0 }, '-', new int[] { 1, 0, 0, 0, 0, 0, 0, 0 }, new int[] { 0 }, '+',
             TestName = "shortEqualValues")]
         [TestCase('-', new int[] { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
             '+', new int[] { 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9 },
