@@ -438,6 +438,28 @@ namespace Vovk_A_A_LR1
                 Assert.AreEqual(sign, resultAdd.Sign);
             }
         }
+
+        public class ModuleTest
+        {
+            //[TestCase(3, 7, 5, TestName = "one")]
+            [TestCase('+', new int[] { 3 }, '+', new int[] { 7 }, new int[] { 5 }, '+', TestName = "one")]
+            [TestCase('+', new int[] { 3 }, '+', new int[] { 17 }, new int[] { 6 }, '+', TestName = "two")]
+            [TestCase('+', new int[] { 9 }, '+', new int[] { 17 }, new int[] { 2 }, '+', TestName = "three")]
+            [TestCase('+', new int[] { 7 }, '+', new int[] { 47 }, new int[] { 27 }, '+', TestName = "four")]
+            //[TestCase(3, 17, 6, TestName = "two")]
+            //[TestCase(9, 17, 2, TestName = "three")]
+            //[TestCase(7, 47, 27, TestName = "four")]
+            public void ModuleTests(char signNum, int[] num, char signModule, int[] module, int[] res, char signRes)
+            {
+                var longNum = new LongInt((signNum, num.ToList<int>()));
+                var longModule = new LongInt((signModule, module.ToList<int>()));
+                var expectLongRes = new LongInt((signRes, res.ToList<int>()));
+                var result = LongInt.Converter(longNum, longModule);
+                for (var i = 0; i < res.Length; i++)
+                    Assert.AreEqual(res[i], expectLongRes[i]);
+                Assert.AreEqual(signRes, result.Sign);
+            }
+        }
     }
 
     public class IndexTest

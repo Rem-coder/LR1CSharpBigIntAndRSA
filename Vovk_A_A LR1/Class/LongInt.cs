@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Numerics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -394,6 +395,33 @@ namespace Vovk_A_A_LR1
                 if (remainderRes[0] != 0)
                     remainderRes.Sign = '-';
             }
+        }
+
+        private static BigInteger GetNODRecurs(BigInteger val1, BigInteger val2)
+        {
+            if (val2 == 1)
+                return new BigInteger(1);
+            else
+                return (1 - GetNODRecurs(val2 % val1, val1) * val2) / val1 + val2;
+        }
+
+        public static LongInt Converter(LongInt val1, LongInt val2)
+        {
+            var val1Byte = val1.Number.Select<int, byte>(x => Convert.ToByte(x)).ToArray();
+            var val2Byte = val2.Number.Select<int, byte>(x => Convert.ToByte(x)).ToArray();
+
+            var bigIntval1 = new BigInteger(val1Byte);
+            var bigIntval2 = new BigInteger(val2Byte);
+
+            var num = GetNODRecurs(bigIntval1, bigIntval2);
+            var sign = num.Sign;
+            var res = num.ToString();
+            var result = new LongInt(('+', new List<int>()));
+            for(var i = 0; i < res.Length; i++)
+                result.Number.Add(int.Parse(res[i].ToString()));
+            if (sign < 0)
+                result.Sign = '-';
+            return result;
         }
     }
 }
